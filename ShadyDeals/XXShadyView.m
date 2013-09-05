@@ -6,6 +6,7 @@
 
 - (void) evalShadingAtLocation: (float) location
               returningResults: (float *) results {
+
     if (self.fancyColors) {
         results[0] = location;
         results[1] = sin(M_PI * 2 * location);
@@ -21,15 +22,30 @@
 } // evalShadingAtLocation
 
 
+#define JUST_C_FUNC 0
+#define FANCY_C_FUNC 0
+
 #if JUST_C_FUNC
 
-static void shadingCallback (void *info, const float *in, float *out) {
-    float thing = in[0];
+static void shadingCallback (void *info, const float *location, float *results) {
+    float thing = *location;
  
-    out[0] = thing;
-    out[1] = thing;
-    out[2] = thing;
-    out[3] = 1.0;
+    results[0] = thing;
+    results[1] = thing;
+    results[2] = thing;
+    results[3] = 1.0;
+} // shadingCallback
+
+#elif FANCY_C_FUNC
+
+static void shadingCallback (void *info, const float *location, float *results) {
+    float thing = *location;
+
+    results[0] = thing;
+    results[1] = sin(M_PI * 2 * thing);
+    results[2] = cos(M_PI * 2 * thing);
+    results[3] = 1.0;
+
 } // shadingCallback
 
 #else
